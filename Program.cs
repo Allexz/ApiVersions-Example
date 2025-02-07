@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ConfiguraÁ„o de versionamento de API
+// Configura√ß√£o de versionamento de API
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -13,25 +13,26 @@ builder.Services.AddApiVersioning(options =>
     options.ApiVersionReader = new UrlSegmentApiVersionReader();
 });
 
-// ConfiguraÁ„o do ApiExplorer para suporte ‡ vers„o
+// Configura√ß√£o do ApiExplorer para suporte √† vers√£o
 builder.Services.AddApiVersioning().AddApiExplorer(options => {
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
 });
 
-// ConfiguraÁ„o do Swagger
+// Configura√ß√£o do Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     var apiVersionProvider = builder.Services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
-    foreach (var description in apiVersionProvider.ApiVersionDescriptions)
+    Corrigido:
+if (!options.SwaggerGeneratorOptions.SwaggerDocs.ContainsKey(description.GroupName))
+{
+    options.SwaggerDoc(description.GroupName, new OpenApiInfo
     {
-        options.SwaggerDoc(description.GroupName, new OpenApiInfo
-        {
-            Title = $"API VERS√O -  {description.ApiVersion}",
-            Version = description.ApiVersion.ToString(),
-            Description = $"DocumentaÁ„o da API - Vers„o {description.ApiVersion}"
-        });
-    }
+        Title = $"API VERS√ÉO - {description.ApiVersion}",
+        Version = description.ApiVersion.ToString(),
+        Description = $"Documenta√ß√£o da API - Vers√£o {description.ApiVersion}"
+    });
+}
 });
 builder.Services.AddAuthorization();
 var app = builder.Build();
